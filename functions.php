@@ -13,6 +13,6 @@ function expire_token() {
   return time() + (60 * 60 * 24);
 }
 
-add_function('jwt_auth_expire', 'expire_function');
+add_action('jwt_auth_expire', 'expire_function');
 
 ?>
