@@ -1,8 +1,16 @@
-### Wordpress plugins needed:
+# Wordpress API REST
+A wordpress api rest example.
 
-- https://github.com/Tmeister/wp-api-jwt-auth 
+## Wordpress plugins needed:
+<ul>
+  <li>
+    <a href="https://github.com/Tmeister/wp-api-jwt-auth">JWT Authentication for WP-API
+    </a>
+  </li>
+</ul>
 
 ### After installing JWT Authentication for WP-API
+
 Add this to .htaccess file:
 
 ```
