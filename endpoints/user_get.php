@@ -1,33 +1,20 @@
 <?php
 
 function api_user_get($request){
-  // $email = sanitize_email($request['email']);
-  // $username = sanitize_text_field($request['username']);
-  // $password = $request['password'];
+  $user = wp_get_current_user();
+  $user_id = $user->ID;
 
-  // if (empty($email) || empty($username) || empty($password)) {
-  //   $response = new WP_Error('error', 'Dados incompletos.', ['status' => 406]);
-  //   return rest_ensure_response($response);
-  // }
-
-  // if (username_exists($username) || email_exists($email)) {
-  //   $response = new WP_Error('error', 'Email/Usuário já cadastrado.', ['status' => 403]);
-  //   return rest_ensure_response($response);
-  // }
-
-  // $response = wp_insert_user([
-  //   'user_login' => $username,
-  //   'user_email' => $email,
-  //   'user_pass'  => $password,
-  //   'role'       => 'subscriber'
-  // ]);
-
-  // // $response = [
-  // //   'ID' => 2,
-  // //   'user_login' => "meu_usuario"
-  // // ];
-
-  $response = 2;
+  if ($user_id === 0) {
+    $response = new WP_Error('error', 'Usuário não tem permissão.', ['status' => 401]);
+    return rest_ensure_response($response);
+  }
+  
+  $response = [
+    'id' => $user_id,
+    'username' => $user->user_login,
+    'nome' => $user->display_name,
+    'email' => $user->user_email
+  ];
 
   return rest_ensure_response($response);
 }
