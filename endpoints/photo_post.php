@@ -1,5 +1,9 @@
 <?php
 
+require_once ABSPATH . 'wp-admin/includes/image.php';
+require_once ABSPATH . 'wp-admin/includes/file.php' ;
+require_once ABSPATH . 'wp-admin/includes/media.php';
+
 function api_photo_post($request){
   $user = wp_get_current_user();
   $user_id = $user->ID;
@@ -12,8 +16,9 @@ function api_photo_post($request){
   $nome  = sanitize_text_field($request['nome']);
   $peso  = sanitize_text_field($request['peso']);
   $idade = sanitize_text_field($request['idade']);
+  $files = $request->get_file_params();
 
-  if (empty($nome) || empty($peso) || empty($idade)){
+  if (empty($nome) || empty($peso) || empty($idade) || empty($files)){
     $response = new WP_Error('error', 'Campos inválidos.', ['status' => 422]);
     return rest_ensure_response($response);
   }
@@ -24,6 +29,7 @@ function api_photo_post($request){
     'post_status' => 'publish',
     'post_title'  => $nome,
     'post_content'=> $nome,
+    'files'       => $files,
     'meta_input'  => [
       'peso'    => $peso,
       'idade'   => $idade,
@@ -31,7 +37,10 @@ function api_photo_post($request){
     ]
   ];
 
-  wp_insert_post($response);
+  $post_id = wp_insert_post($response);
+
+  $photo_id = media_handle_upload('img', $post_id);
+  update_post_meta($post_id, 'img', $photo_id);
 
   return rest_ensure_response($response);
 }
